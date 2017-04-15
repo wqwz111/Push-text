@@ -37,9 +37,6 @@ function leaveRoom(roomNo) {
     };
 
     chrome.runtime.sendMessage(data, null);
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, data);
-    });
     chrome.storage.local.remove('current-room');
 }
 
@@ -51,8 +48,5 @@ function enterRoom(newNo, oldNo) {
     };
 
     chrome.runtime.sendMessage(data, null);
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, data);
-    });
     chrome.storage.local.set({ 'current-room': newNo });
 }

@@ -121,7 +121,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
       break;
     }
     case 'capture': {
-      capture(request.selText);
+      chrome.storage.local.get('current-room', function (item) {
+        if (item['current-room']) {
+          capture(request.selText);
+        }
+      });
       break;
     }
     case 'leave-room': {

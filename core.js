@@ -20,21 +20,7 @@ var keydown = function (e) {
     chrome.runtime.sendMessage(data, null);
   }
 };
-chrome.extension.onMessage.addListener(function (request, sender, callback) {
-  switch (request.directive) {
-    case 'upload-file': {
-      break;
-    }
-    case 'leave-room': {
-      document.removeEventListener("mousemove", mousemove);
-      //document.removeEventListener("dblclick", dblClick);
-      document.removeEventListener("keydown", keydown);
-      break;
-    }
-    case 'enter-room': {
-      document.addEventListener('mousemove', mousemove, false);
-      //document.addEventListener('dblclick', dblClick, false);
-      document.addEventListener('keydown', keydown, false);
-    }
-  }
-});
+
+document.addEventListener('mousemove', mousemove, false);
+//document.addEventListener('dblclick', dblClick, false);
+document.addEventListener('keydown', keydown, false);
