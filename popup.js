@@ -2,8 +2,10 @@ $(document).ready(function () {
     $("#enter-room").click(function () {
         var newNo = $("#room-number").val();
         var oldNo = $("#current-number").text();
-        enterRoom(newNo, oldNo);
-        $("#current-number").text(newNo);
+        if (newNo) {
+            enterRoom(newNo, oldNo);
+            $("#current-number").text(newNo);
+        }
     });
 
     $("#leave-room").click(function () {

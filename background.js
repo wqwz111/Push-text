@@ -19,9 +19,8 @@ firebase.auth().onAuthStateChanged(function (user) {
     currentUser = user;
   } else {
     // User is signed out.
-    console.log("logged out")
-    removeUserFromRoom(currentUser.roomNo, currentUser.uid);
-    currentUser = null;
+    console.log("logged out, reconnect")
+    firebase.auth().signInAnonymously();
   }
 });
 

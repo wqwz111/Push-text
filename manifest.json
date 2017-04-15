@@ -4,7 +4,7 @@
   "name": "Push Text",
   "description": "This extension push selected text to other devices",
   "version": "1.0",
-  "content_security_policy": "script-src 'self' https://cdn.bootcss.com https://*.firebaseio.com; object-src 'self'",
+  "content_security_policy": "script-src 'self' https://*.firebaseio.com; object-src 'self'",
 
 
   "content_scripts": [
