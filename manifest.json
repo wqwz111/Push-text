@@ -11,8 +11,7 @@
     {
       "matches": ["<all_urls>"],
       "js": ["core.js"],
-      "run_at": "document_end",
-      "all_frames": true
+      "run_at": "document_end"
     }
   ],
   "background": {
@@ -25,7 +24,6 @@
   },
   "permissions": [
     "tabs",
-    "activeTab",
     "storage",
     "<all_urls>",
     "https://ajax.googleapis.com/"

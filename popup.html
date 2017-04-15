@@ -15,9 +15,18 @@
          width: 200px;
          padding: 5px;
       }
-      
+      .title {
+         width: 100%;
+      }
+      .title h5 {
+         display: inline-block;
+      }
       #current-number {
          color: blue;
+         font-size: x-large;
+      }
+      .title button {
+         vertical-align: text-bottom;
       }
    </style>
 
@@ -37,6 +46,8 @@
 <body>
    <div class="title">
       <h5>当前房间：<span id="current-number">无</span></h5>
+      <button type="button" class="btn btn-danger btn-xs" id="leave-room">离开</button>
+   </div>
    <div class="input-group">
       <input type="text" class="form-control" id="room-number" placeholder="Room number.">
       <span class="input-group-btn">

@@ -124,6 +124,12 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
       capture(request.selText);
       break;
     }
+    case 'leave-room': {
+      var uid = currentUser.uid;
+      removeUserFromRoom(request.roomNo, uid);
+      console.log('left room: ' + request.oldRoom);
+      break;
+    }
   }
 });
 
