@@ -1,0 +1,33 @@
+{
+  "manifest_version": 2,
+
+  "name": "Push Text",
+  "description": "This extension push selected text to other devices",
+  "version": "1.0",
+  "content_security_policy": "script-src 'self' https://cdn.bootcss.com https://*.firebaseio.com; object-src 'self'",
+
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["firebase.js","core.js"],
+      "run_at": "document_end",
+      "all_frames": true
+    }
+  ],
+  "background": {
+    "persistent": false,
+    "scripts": ["background.js"]
+  },
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "storage",
+    "<all_urls>",
+    "https://ajax.googleapis.com/"
+  ]
+}

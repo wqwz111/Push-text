@@ -1,0 +1,50 @@
+<!doctype html>
+<!--
+ This page is shown when the extension button is clicked, because the
+ "browser_action" field in manifest.json contains the "default_popup" key with
+ value "popup.html".
+ -->
+<html>
+
+<head>
+   <title>Push Text</title>
+   <style>
+      body {
+         font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+         font-size: 100%;
+         width: 200px;
+         padding: 5px;
+      }
+      
+      #current-number {
+         color: blue;
+      }
+   </style>
+
+   <!--
+      - JavaScript and HTML must be in separate files: see our Content Security
+      - Policy documentation[1] for details and explanation.
+      -
+      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
+     -->
+   <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js" crossorigin="anonymous"></script>
+   <!-- Latest compiled and minified CSS -->
+   <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+   <!-- Latest compiled and minified JavaScript -->
+   <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+   <div class="title">
+      <h5>当前房间：<span id="current-number">无</span></h5>
+   <div class="input-group">
+      <input type="text" class="form-control" id="room-number" placeholder="Room number.">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button" id="enter-room">Go!</button>
+      </span>
+   </div>
+
+   <script src="popup.js"></script>
+</body>
+
+</html>
