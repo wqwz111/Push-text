@@ -10,14 +10,14 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["firebase.js","core.js"],
+      "js": ["core.js"],
       "run_at": "document_end",
       "all_frames": true
     }
   ],
   "background": {
-    "persistent": false,
-    "scripts": ["background.js"]
+    "persistent": true,
+    "scripts": ["firebase.js","background.js"]
   },
   "browser_action": {
     "default_icon": "icon.png",

@@ -1,20 +1,26 @@
 $(document).ready(function () {
-   $("#enter-room").click(function () {
-      var roomNo = $("#room-number").val();
-      var data = {
-         directive: 'enter-room',
-         newRoom: roomNo
-      };
-      chrome.tabs.query({ active: true }, function (tabs) {
-         chrome.tabs.sendMessage(tabs[0].id, data);
-      });
-      $("#current-number").text(roomNo);
-      chrome.storage.local.set({ 'current-room': roomNo });
-   });
+    $("#enter-room").click(function () {
+        var newNo = $("#room-number").val();
+        var oldNo = $("#current-number").text();
+        enterRoom(newNo, oldNo);
+        $("#current-number").text(newNo);
+    });
 
-   chrome.storage.local.get('current-room', function (item) {
-      if (item['current-room']) {
-         $("#current-number").text(item['current-room']);
-      }
-   });
+    chrome.storage.local.get('current-room', function (item) {
+        if (item['current-room']) {
+            var newNo = item['current-room'];
+            $("#current-number").text(newNo);
+        }
+    });
 });
+
+function enterRoom(newNo, oldNo) {
+    var data = {
+        directive: 'enter-room',
+        newRoom: newNo,
+        oldRoom: oldNo
+    };
+
+    chrome.runtime.sendMessage(data, null);
+    chrome.storage.local.set({ 'current-room': newNo });
+}
