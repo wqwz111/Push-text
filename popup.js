@@ -4,21 +4,28 @@ $(document).ready(function () {
         var oldNo = $("#current-number").text();
         enterRoom(newNo, oldNo);
         $("#current-number").text(newNo);
-        $("#leave-room").show();
     });
 
     $("#leave-room").click(function () {
         var roomNo = $("#current-number").text();
         leaveRoom(roomNo);
         $("#current-number").text("无");
-        $("#leave-room").hide();
+    });
+
+    $("#current-number").bind("DOMNodeInserted",function() {
+        if ($("#current-number").text() == "无") {
+            $("#leave-room").hide();
+        } else {
+            $("#leave-room").show();
+        }
     });
 
     chrome.storage.local.get('current-room', function (item) {
         if (item['current-room']) {
             var newNo = item['current-room'];
             $("#current-number").text(newNo);
-            $("#leave-room").show();
+        } else {
+            $("#leave-room").hide();
         }
     });
 });

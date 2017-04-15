@@ -27,16 +27,14 @@ chrome.extension.onMessage.addListener(function (request, sender, callback) {
     }
     case 'leave-room': {
       document.removeEventListener("mousemove", mousemove);
-      document.removeEventListener("dblclick", dblClick);
+      //document.removeEventListener("dblclick", dblClick);
       document.removeEventListener("keydown", keydown);
-      console.log("remove listeners");
       break;
     }
     case 'enter-room': {
       document.addEventListener('mousemove', mousemove, false);
-      document.addEventListener('dblclick', dblClick, false);
+      //document.addEventListener('dblclick', dblClick, false);
       document.addEventListener('keydown', keydown, false);
-      console.log("add listeners");
     }
   }
 });
