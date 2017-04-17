@@ -8,9 +8,9 @@ $(document).ready(function () {
    chrome.storage.local.get('current-room', function (item) {
       if (item['current-room']) {
          $("#room-number").val(item['current-room']);
-         setDataChangeListener();
       }
    });
+   setDataChangeListener();
 
    function enterRoom() {
       var roomNo = $("#room-number").val();
