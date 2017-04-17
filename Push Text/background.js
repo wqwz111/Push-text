@@ -24,6 +24,17 @@ firebase.auth().onAuthStateChanged(function (user) {
   }
 });
 
+function addDataChangeListener(roomNo, callback) {
+  var ref = fireDatabase.ref('/rooms/' + roomNo + '/messages');
+  ref.off('child_added', callback);
+  ref.on('child_added', callback);
+}
+
+function removeDataChangeListener(roomNo, callback) {
+  var ref = fireDatabase.ref('/rooms/' + roomNo + '/messages');
+  ref.off('child_added', callback);
+}
+
 function uploadFile(dataUri, roomNo, callback) {
   var fileName = Math.round(new Date().getTime() / 1000);
   var ref = firebase.storage().ref('/images/' + roomNo + '/' + fileName + '.png');
@@ -68,8 +79,6 @@ function removeUserFromRoom(roomNo, uid, callback) {
           .hasChild(uidStr)) {
         var ref = fireDatabase.ref('rooms/' + roomNo + '/users');
         ref.child(uidStr).remove();
-        var msg = buildMsg(uid, "Member leaved.", null);
-        sendMessageToRoom(roomNo, msg);
         if (typeof callback === 'function') {
           callback(roomNo);
         }
@@ -86,16 +95,12 @@ function createOrEnterRoom(roomNo, uid, callback) {
           ownerId: uid
         });
         addUserToRoom(roomNo, uid);
-        var msg = buildMsg(uid, "New member joined.", null);
-        sendMessageToRoom(roomNo, msg);
         if (typeof callback === 'function') {
           callback(roomNo);
         }
       } else if (!snapshot.child(roomNoStr)
         .hasChild(uid.toString())) {
         addUserToRoom(roomNo, uid);
-        var msg = buildMsg(uid, "New member joined.", null);
-        sendMessageToRoom(roomNo, msg);
         if (typeof callback === 'function') {
           callback(roomNo);
         }
@@ -107,16 +112,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
   switch (request.directive) {
     case 'enter-room': {
       var uid = currentUser.uid;
-      if (request.oldRoom) {
-        removeUserFromRoom(request.oldRoom, uid);
-        console.log('left room: ' + request.oldRoom);
-      }
-      console.log('entered room: ' + request.newRoom);
-      createOrEnterRoom(request.newRoom, uid, function (roomNo) {
-        chrome.storage.local.set({ 'current-room': roomNo }, function () {
-          currentRoom = roomNo;
-        });
-      });
+      enterRoom(request);
       break;
     }
     case 'capture': {
@@ -128,20 +124,56 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
       break;
     }
     case 'leave-room': {
-      var uid = currentUser.uid;
-      removeUserFromRoom(request.roomNo, uid);
-      console.log('left room: ' + request.oldRoom);
+      leaveRoom(request);
+      break;
+    }
+    case 'send-message': {
+      var msg = buildMsg(currentUser.uid, request.content);
+      sendMessageToRoom(currentRoom, msg);
       break;
     }
   }
 });
 
+var onNewMessage = null;
+
+var childAdd = function (snapshot) {
+  onNewMessage(snapshot.val());
+}
+
 function capture(selText) {
-  chrome.tabs.captureVisibleTab(null, { format: 'png', quality: 100 },
+  chrome.tabs.captureVisibleTab(null, { format: 'png', quality: 50 },
     function (dataURI) {
       uploadFile(dataURI, currentRoom, function (downloadURL) {
         var msg = buildMsg(currentUser.uid, selText, downloadURL);
         sendMessageToRoom(currentRoom, msg);
       });
     });
+}
+
+function onDataChange(callback) {
+  if (typeof callback === 'function') {
+    onNewMessage = callback;
+  }
+}
+
+function enterRoom(request) {
+  var uid = currentUser.uid;
+  if (request.oldRoom) {
+    removeUserFromRoom(request.oldRoom, uid);
+    console.log('left room: ' + request.oldRoom);
+  }
+  console.log('entered room: ' + request.newRoom);
+  createOrEnterRoom(request.newRoom, uid, function (roomNo) {
+    addDataChangeListener(roomNo, childAdd);
+    currentRoom = roomNo;
+  });
+}
+
+function leaveRoom(request) {
+  var uid = currentUser.uid;
+  removeUserFromRoom(request.roomNo, uid, function (roomNo) {
+    removeDataChangeListener(roomNo, childAdd);
+  });
+  console.log('left room: ' + request.roomNo);
 }

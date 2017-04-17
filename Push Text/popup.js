@@ -8,14 +8,18 @@ $(document).ready(function () {
         }
     });
 
+    $("#tab-room").click(function () {
+        chrome.tabs.create({url: 'app.html'});
+    });
+
     $("#leave-room").click(function () {
         var roomNo = $("#current-number").text();
         leaveRoom(roomNo);
-        $("#current-number").text("无");
+        $("#current-number").text("none");
     });
 
     $("#current-number").bind("DOMNodeInserted",function() {
-        if ($("#current-number").text() == "无") {
+        if ($("#current-number").text() == "none") {
             $("#leave-room").hide();
         } else {
             $("#leave-room").show();

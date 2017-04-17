@@ -12,7 +12,7 @@
       body {
          font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
          font-size: 100%;
-         width: 200px;
+         width: 250px;
          padding: 5px;
       }
       .title {
@@ -28,6 +28,10 @@
       .title button {
          vertical-align: text-bottom;
       }
+      #tab-room {
+        margin-top: 5px;
+        width: 100%;
+      }
    </style>
 
    <!--
@@ -36,24 +40,27 @@
       -
       - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
      -->
-   <script src="jquery.min.js"></script>
+   <script src="lib/jquery.min.js"></script>
    <!-- Latest compiled and minified CSS -->
-   <link href="bootstrap.min.css" rel="stylesheet">
+   <link href="lib/bootstrap.min.css" rel="stylesheet">
    <!-- Latest compiled and minified JavaScript -->
-   <script src="bootstrap.min.js"></script>
+   <script src="lib/tether.min.js"></script>
+   <script src="lib/bootstrap.min.js"></script>
+
 </head>
 
 <body>
    <div class="title">
-      <h5>当前房间号：<span id="current-number">无</span></h5>
-      <button type="button" class="btn btn-danger btn-xs" id="leave-room">离开</button>
+      <h5>Room：<span id="current-number">none</span></h5>
+      <button type="button" class="btn btn-danger btn-sm" id="leave-room">Leave</button>
    </div>
    <div class="input-group">
-      <input type="text" class="form-control" id="room-number" placeholder="Room number.">
+      <input type="text" class="form-control" id="room-number" placeholder="Input room number">
       <span class="input-group-btn">
-        <button class="btn btn-default" type="button" id="enter-room">Go!</button>
+        <button class="btn btn-secondary" type="button" id="enter-room">Enter</button>
       </span>
    </div>
+   <button type="button" class="btn btn-success" id="tab-room">New tab</button>
 
    <script src="popup.js"></script>
 </body>
