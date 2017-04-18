@@ -7,8 +7,9 @@ var config = {
   storageBucket: "dream-c5c23.appspot.com",
   messagingSenderId: "273420774000"
 };
+
 firebase.initializeApp(config);
-var fireDatabase = firebase.database();
+fireDatabase = firebase.database();
 
 var currentUser = {};
 
@@ -138,7 +139,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
 var onNewMessage = null;
 
 var childAdd = function (snapshot) {
-  onNewMessage(snapshot.val());
+  if (onNewMessage) {
+    onNewMessage(snapshot.val());
+  }
 }
 
 function capture(selText) {
