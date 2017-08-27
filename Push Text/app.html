@@ -41,16 +41,42 @@
       height: 100%;
       min-height: 100%;
     }
+    @media (min-width: 576px) {
+        .modal-dialog {
+            max-width: 90%;
+            margin:30px auto;
+        }
+    }
+
+    @media (min-width: 992px) {
+        .modal-lg {
+            max-width: 90%;
+            margin:30px auto;
+        }
+    }
+    .modal-dialog {
+        position: relative;
+        width: auto;
+        display: inline-block;
+    }
+    #modal-img {
+        width: 100%;
+    }
+    button.close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
     .card {
-      margin-top: 15px;
-      margin-bottom: 15px;
-      max-height: 670px;
+      margin-top: 60px;
+      margin-bottom: 50px;
+      max-height: 750px;
     }
     .card-block {
       background-color: #49af4c;
     }
     .card-text {
-      overflow: overlay;
+      overflow-y: auto;
     }
     .card-img-top {
       overflow: hidden;
@@ -72,6 +98,20 @@
     </div>
     <div class="row align-items-center justify-content-md-center">
       <div id="msg-list" class="col-lg-8">
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade text-center" id="modal" tabindex="-1" role="dialog" aria-labelledby="ImageModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <img src="close_64px.png">
+            </button>
+          <img id='modal-img' src="" />
+        </div>
       </div>
     </div>
   </div>
