@@ -94,7 +94,8 @@ function createOrEnterRoom(roomNo, uid, callback) {
          var roomNoStr = roomNo.toString();
          if (!snapshot.hasChild(roomNoStr)) {
             fireDatabase.ref('rooms/' + roomNo).set({
-               ownerId: uid
+            ownerId: uid,
+            createdTime: firebase.database.ServerValue.TIMESTAMP
             });
             addUserToRoom(roomNo, uid);
             if (typeof callback === 'function') {
