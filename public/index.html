@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Push Text</title>
+  <link href="lib/bootstrap.min.css" rel="stylesheet">
+  <style>
+    html,
+    body {
+      height: 100%;
+      background-color: #333;
+    }
+    body {
+      font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+      font-size: 100%;
+      color: #fff;
+      text-align: center;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, .5);
+    }
+    #go {
+      color: #fff;
+      background-color: #49af4c;
+      border-color: #3e9e41;
+    }
+    #go:active, #go:hover {
+      color: #fff;
+      background-color: #2f7d31;
+      border-color: #257727;
+    }
+    #room-number {
+      color: #3e3d3d;
+      margin-right: 5px;
+    }
+    #room-input {
+      margin-right: auto;
+      margin-left: auto;
+      margin-top: 20px;
+    }
+    .site-wrapper {
+      width: 100%;
+      height: 100%;
+      min-height: 100%;
+    }
+    @media (min-width: 576px) {
+        .modal-dialog {
+            max-width: 90%;
+            margin:30px auto;
+        }
+    }
+
+    @media (min-width: 992px) {
+        .modal-lg {
+            max-width: 90%;
+            margin:30px auto;
+        }
+    }
+    .modal-dialog {
+        position: relative;
+        width: auto;
+        display: inline-block;
+    }
+    #modal-img {
+        width: 100%;
+    }
+    button.close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+    .card {
+      margin-top: 60px;
+      margin-bottom: 50px;
+      max-height: 750px;
+    }
+    .card-block {
+      background-color: #49af4c;
+    }
+    .card-text {
+      overflow-y: auto;
+    }
+    .card-img-top {
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="site-wrapper container">
+    <div class="row align-items-center justify-content-md-center">
+      <div class="col-lg-5">
+        <div id="room-input" class="input-group">
+          <input type="text" class="form-control input-lg" id="room-number" placeholder="Input room number">
+          <span class="input-group-btn">
+            <button class="btn btn-primary btn-lg" id="go" type="button">Enter</button>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="row align-items-center justify-content-md-center">
+      <div id="msg-list" class="col-lg-8">
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade text-center" id="modal" tabindex="-1" role="dialog" aria-labelledby="ImageModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <img src="close_64px.png">
+            </button>
+          <img id='modal-img' src="" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="lib/jquery.min.js"></script>
+  <script src="lib/tether.min.js"></script>
+  <script src="lib/bootstrap.min.js"></script>
+  <script src="lib/firebase.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
