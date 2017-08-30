@@ -7,10 +7,9 @@ $(document).ready(function () {
       storageBucket: "dream-c5c23.appspot.com",
       messagingSenderId: "273420774000"
    };
-   var fireDatabase;
-   var localStorage = window.localStorage;
    firebase.initializeApp(config);
-   fireDatabase = firebase.database();
+   var fireDatabase = firebase.database();
+   var localStorage = window.localStorage;
 
    var currentRoom = localStorage.getItem('current-room');
    if (currentRoom) {
@@ -56,28 +55,30 @@ $(document).ready(function () {
 
    function enterRoom(shouldForceLoad) {
       var roomNo = $("#room-number").val();
-      if (!currentRoom) {
-         if (typeof(shouldForceLoad) == 'undefined') {
-            if (currentRoom === roomNo) {
-               return;
-            }
-            leaveRoom(currentRoom);
+      if (typeof(shouldForceLoad) == 'undefined') {
+         if (currentRoom === roomNo) {
+            return;
          }
-         setDataChangeListener(roomNo, onDataChanged);
-         localStorage.setItem('current-room', roomNo);
-         currentRoom = roomNo;
-         $("#msg-list").children().remove();
+         leaveRoom(currentRoom);
       }
+      setDataChangeListener(roomNo, onDataChanged);
+      localStorage.setItem('current-room', roomNo);
+      currentRoom = roomNo;
+      $("#msg-list").children().remove();
    }
 
    function leaveRoom(roomNo) {
-      var ref = fireDatabase.ref('/rooms/' + roomNo + '/messages');
-      ref.off('child_added', onDataChanged);
+      if (roomNo !== null) {
+         var ref = fireDatabase.ref('/rooms/' + roomNo + '/messages');
+         ref.off('child_added', onDataChanged);
+      }
    }
 
    function setDataChangeListener(roomNo, listener) {
-      var ref = fireDatabase.ref('/rooms/' + roomNo + '/messages');
-      ref.off('child_added', listener);
-      ref.on('child_added', listener);
+      if (roomNo !== null && typeof(listener) == 'function') {
+         var ref = fireDatabase.ref('/rooms/' + roomNo + '/messages');
+         ref.off('child_added', listener);
+         ref.on('child_added', listener);
+      }
    }
 });
