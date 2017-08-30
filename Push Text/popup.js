@@ -6,9 +6,8 @@ $(document).ready(function () {
    $("#enter-room").click(function () {
       var newNo = $("#room-number").val();
       var oldNo = $("#current-number").text();
-      if (newNo) {
+      if (newNo && newNo.trim() != "") {
          enterRoom(newNo, oldNo);
-         $("#current-number").text(newNo);
       }
    });
 
@@ -19,7 +18,6 @@ $(document).ready(function () {
    $("#leave-room").click(function () {
       var roomNo = $("#current-number").text();
       leaveRoom(roomNo);
-      $("#current-number").text("none");
    });
 
    $("#current-number").bind("DOMNodeInserted", function () {
@@ -33,10 +31,14 @@ $(document).ready(function () {
    chrome.storage.local.get('current-room', function (item) {
       if (item['current-room']) {
          var newNo = item['current-room'];
-         $("#current-number").text(newNo);
-         if (!enteredRoom) {
-            enterRoom(newNo);
-         }
+         chrome.storage.local.get('current-room', function (item) {
+            if (item['entered-room']) {
+               enterRoom(newNo);
+               console.log('enter room, popup');
+            } else {
+               $("#current-number").text(newNo);
+            }
+         });
       } else {
          $("#leave-room").hide();
       }
@@ -55,7 +57,8 @@ function leaveRoom(roomNo) {
       directive: 'leave-room',
       roomNo: roomNo
    };
-   enteredRoom = false;
+   $("#current-number").text("none");
+   chrome.storage.local.remove('entered-room');
    chrome.runtime.sendMessage(data, null);
    chrome.storage.local.remove('current-room');
 }
@@ -65,11 +68,12 @@ function enterRoom(newNo, oldNo) {
       directive: 'enter-room',
       newRoom: newNo
    };
-   if (typeof(oldNo) != 'undefined') {
-       data.oldRoom = oldNo;
+   if (typeof (oldNo) != 'undefined') {
+      data.oldRoom = oldNo;
    }
 
-   enteredRoom = true;
+   $("#current-number").text(newNo);
+   chrome.storage.local.set({ 'entered-room': true });
    chrome.runtime.sendMessage(data, null);
    chrome.storage.local.set({ 'current-room': newNo });
 }

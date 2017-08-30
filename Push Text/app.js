@@ -1,6 +1,6 @@
 $(document).ready(function () {
    var backgroundPage = null;
-   var roomId;
+   var currentRoom;
    $("#go").click(function () {
       setDataChangeListener();
       enterRoom();
@@ -11,6 +11,7 @@ $(document).ready(function () {
          $("#room-number").val(item['current-room']);
          setDataChangeListener();
          enterRoom(true);
+         currentRoom = item['current-room'];
       }
    });
 
@@ -19,15 +20,15 @@ $(document).ready(function () {
       return "";
    });
    $(window).on('unload', function () {
-      if (typeof(roomId) != 'undefined') {
-         leaveRoom(roomId);
+      if (typeof(currentRoom) != 'undefined' || !currentRoom) {
+         leaveRoom(currentRoom);
       }
    });
 
    function prepareToLeaveRoom() {
       chrome.storage.local.get('current-room', function (item) {
          if (item['current-room']) {
-            roomId = item['current-room'];
+            currentRoom = item['current-room'];
          }
       });
    }

@@ -136,6 +136,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
          break;
       }
       case 'sign-in': {
+         console.log('sign in');
          if (currentUser) {
             return;
          }

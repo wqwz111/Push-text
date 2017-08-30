@@ -56,7 +56,7 @@ $(document).ready(function () {
 
    function enterRoom(shouldForceLoad) {
       var roomNo = $("#room-number").val();
-      if (currentRoom) {
+      if (!currentRoom) {
          if (typeof(shouldForceLoad) == 'undefined') {
             if (currentRoom === roomNo) {
                return;
