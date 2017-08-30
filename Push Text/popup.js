@@ -1,6 +1,8 @@
 $(document).ready(function () {
    signIn();
 
+   var enteredRoom = false;
+
    $("#enter-room").click(function () {
       var newNo = $("#room-number").val();
       var oldNo = $("#current-number").text();
@@ -32,6 +34,9 @@ $(document).ready(function () {
       if (item['current-room']) {
          var newNo = item['current-room'];
          $("#current-number").text(newNo);
+         if (!enteredRoom) {
+            enterRoom(newNo);
+         }
       } else {
          $("#leave-room").hide();
       }
@@ -50,7 +55,7 @@ function leaveRoom(roomNo) {
       directive: 'leave-room',
       roomNo: roomNo
    };
-
+   enteredRoom = false;
    chrome.runtime.sendMessage(data, null);
    chrome.storage.local.remove('current-room');
 }
@@ -58,10 +63,13 @@ function leaveRoom(roomNo) {
 function enterRoom(newNo, oldNo) {
    var data = {
       directive: 'enter-room',
-      newRoom: newNo,
-      oldRoom: oldNo
+      newRoom: newNo
    };
+   if (typeof(oldNo) != 'undefined') {
+       data.oldRoom = oldNo;
+   }
 
+   enteredRoom = true;
    chrome.runtime.sendMessage(data, null);
    chrome.storage.local.set({ 'current-room': newNo });
 }

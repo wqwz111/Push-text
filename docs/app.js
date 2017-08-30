@@ -7,34 +7,33 @@ $(document).ready(function () {
       storageBucket: "dream-c5c23.appspot.com",
       messagingSenderId: "273420774000"
    };
-   var currentUser;
    var fireDatabase;
    var localStorage = window.localStorage;
    firebase.initializeApp(config);
    fireDatabase = firebase.database();
-   firebase.auth().onAuthStateChanged(function (user) {
-      if (user) {
-         // User is signed in.
-         console.log("logged in")
-         currentUser = user;
-      } else {
-         // User is signed out.
-         console.log("logged out, reconnect")
-         firebase.auth().signInAnonymously();
-      }
-   });
+
+   var currentRoom = localStorage.getItem('current-room');
+   if (currentRoom) {
+      console.log('enter room: ' + currentRoom);
+      $("#room-number").val(currentRoom);
+      enterRoom(true);
+   }
 
    $("#go").click(function () {
       enterRoom();
    });
 
-   var currentRoom = localStorage.getItem('current-room');    
-   if (currentRoom) {
-      $("#room-number").val(currentRoom);
-      enterRoom();
-   }
+   $(window).on('beforeunload', function () {
+      return "";
+   });
+   $(window).on('unload', function () {
+      if (currentRoom) {
+         console.log('leave room: ' + currentRoom);
+         leaveRoom(currentRoom);
+      }
+   });
 
-   var onDataChanged = function (snap) {
+   function onDataChanged(snap) {
       var data = snap.val();
       if (data.fileUrl) {
          $("#msg-list").prepend("<div class='card'>" +
@@ -53,18 +52,22 @@ $(document).ready(function () {
             "<p class='card-text'>" +
             data.content + "</p></div></div>");
       }
-   }
+   };
 
-   function enterRoom() {
+   function enterRoom(shouldForceLoad) {
       var roomNo = $("#room-number").val();
-      if (currentRoom && currentRoom === $("#room-number").val()) {
-         return;
+      if (currentRoom) {
+         if (typeof(shouldForceLoad) == 'undefined') {
+            if (currentRoom === roomNo) {
+               return;
+            }
+            leaveRoom(currentRoom);
+         }
+         setDataChangeListener(roomNo, onDataChanged);
+         localStorage.setItem('current-room', roomNo);
+         currentRoom = roomNo;
+         $("#msg-list").children().remove();
       }
-      leaveRoom(currentRoom);
-      setDataChangeListener(roomNo, onDataChanged);
-      localStorage.setItem('current-room', roomNo);
-      currentRoom = roomNo;
-      $("#msg-list").children().remove();
    }
 
    function leaveRoom(roomNo) {
