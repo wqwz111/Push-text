@@ -3,36 +3,14 @@ $(document).ready(function () {
       apiKey: "AIzaSyDOZXLS_Gf5K343TuB1QTL-IwC27eNuv6U",
       authDomain: "dream-c5c23.firebaseapp.com",
       databaseURL: "https://dream-c5c23.firebaseio.com",
-      projectId: "dream-c5c23",
-      storageBucket: "dream-c5c23.appspot.com",
-      messagingSenderId: "273420774000"
+      storageBucket: "dream-c5c23.appspot.com"
    };
    firebase.initializeApp(config);
+   firebase.auth().signInAnonymously();
    var fireDatabase = firebase.database();
    var localStorage = window.localStorage;
 
-   var currentRoom = localStorage.getItem('current-room');
-   if (currentRoom) {
-      console.log('enter room: ' + currentRoom);
-      $("#room-number").val(currentRoom);
-      enterRoom(true);
-   }
-
-   $("#go").click(function () {
-      enterRoom();
-   });
-
-   $(window).on('beforeunload', function () {
-      return "";
-   });
-   $(window).on('unload', function () {
-      if (currentRoom) {
-         console.log('leave room: ' + currentRoom);
-         leaveRoom(currentRoom);
-      }
-   });
-
-   function onDataChanged(snap) {
+   var onDataChanged = function (snap) {
       var data = snap.val();
       if (data.fileUrl) {
          $("#msg-list").prepend("<div class='card'>" +
@@ -53,6 +31,26 @@ $(document).ready(function () {
       }
    };
 
+   var currentRoom = localStorage.getItem('current-room');
+   if (currentRoom) {
+      $("#room-number").val(currentRoom);
+      enterRoom(true);
+   }
+
+   $("#go").click(function () {
+      enterRoom();
+   });
+
+   $(window).on('beforeunload', function () {
+      return "";
+   });
+   $(window).on('unload', function () {
+      if (currentRoom) {
+         console.log('leave room: ' + currentRoom);
+         leaveRoom(currentRoom);
+      }
+   });
+
    function enterRoom(shouldForceLoad) {
       var roomNo = $("#room-number").val();
       if (typeof(shouldForceLoad) == 'undefined') {
@@ -65,6 +63,7 @@ $(document).ready(function () {
       localStorage.setItem('current-room', roomNo);
       currentRoom = roomNo;
       $("#msg-list").children().remove();
+      console.log('enter room: ' + roomNo);
    }
 
    function leaveRoom(roomNo) {
