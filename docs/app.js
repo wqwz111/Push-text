@@ -40,6 +40,12 @@ $(document).ready(function () {
    $("#go").click(function () {
       enterRoom();
    });
+   
+   $(document).keydown(function (e) {
+      if (e.keyCode == 13) {//13 is 'enter'
+            enterRoom();
+      }
+   });
 
    $(window).on('beforeunload', function () {
       return "";
