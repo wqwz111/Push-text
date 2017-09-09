@@ -6,7 +6,6 @@ $(document).ready(function () {
       storageBucket: "dream-c5c23.appspot.com"
    };
    firebase.initializeApp(config);
-   firebase.auth().signInAnonymously();
    var fireDatabase = firebase.database();
    var localStorage = window.localStorage;
 
@@ -14,8 +13,8 @@ $(document).ready(function () {
       var data = snap.val();
       if (data.fileUrl) {
          $("#msg-list").prepend("<div class='card'>" +
-            "<img class='card-img card-img-top' src='" +
-            data.fileUrl + "' alt='Card image cap'>" +
+            "<img class='card-img card-img-top lazyload'" +
+            " data-src='" + data.fileUrl + "' alt='Card image cap'>" +
             "<div class='card-block'>" +
             "<p class='card-text'>" +
             data.content + "</p></div></div>");
@@ -23,6 +22,7 @@ $(document).ready(function () {
             $("#modal-img").attr("src", $(this).attr("src"));
             $("#modal").modal('show');
          });
+         lazyload();
       } else {
          $("#msg-list").prepend("<div class='card'>" +
             "<div class='card-block'>" +
@@ -39,12 +39,6 @@ $(document).ready(function () {
 
    $("#go").click(function () {
       enterRoom();
-   });
-   
-   $(document).keydown(function (e) {
-      if (e.keyCode == 13) {//13 is 'enter'
-            enterRoom();
-      }
    });
 
    $(window).on('beforeunload', function () {
