@@ -1,12 +1,10 @@
 $(document).ready(function () {
    signIn();
 
-   var enteredRoom = false;
-
    $("#enter-room").click(function () {
       var newNo = $("#room-number").val();
       var oldNo = $("#current-number").text();
-      if (newNo && newNo.trim() != "") {
+       if (newNo && newNo.trim() !== "") {
          enterRoom(newNo, oldNo);
       }
    });
@@ -21,7 +19,7 @@ $(document).ready(function () {
    });
 
    $("#current-number").bind("DOMNodeInserted", function () {
-      if ($("#current-number").text() == "none") {
+       if ($("#current-number").text() === "none") {
          $("#leave-room").hide();
       } else {
          $("#leave-room").show();
@@ -29,18 +27,11 @@ $(document).ready(function () {
    });
 
    chrome.storage.local.get('current-room', function (item) {
-      if (item['current-room']) {
-         var newNo = item['current-room'];
-         chrome.storage.local.get('current-room', function (item) {
-            if (item['entered-room']) {
-               enterRoom(newNo);
-               console.log('enter room, popup');
-            } else {
-               $("#current-number").text(newNo);
-            }
-         });
-      } else {
-         $("#leave-room").hide();
+       var newNo = item['current-room'];
+       if (!newNo) {
+           $("#leave-room").hide();
+       } else {
+           $("#current-number").text(newNo);
       }
    });
 });
@@ -58,7 +49,6 @@ function leaveRoom(roomNo) {
       roomNo: roomNo
    };
    $("#current-number").text("none");
-   chrome.storage.local.remove('entered-room');
    chrome.runtime.sendMessage(data, null);
    chrome.storage.local.remove('current-room');
 }
@@ -68,12 +58,11 @@ function enterRoom(newNo, oldNo) {
       directive: 'enter-room',
       newRoom: newNo
    };
-   if (typeof (oldNo) != 'undefined') {
+    if (typeof (oldNo) !== 'undefined') {
       data.oldRoom = oldNo;
    }
 
    $("#current-number").text(newNo);
-   chrome.storage.local.set({ 'entered-room': true });
    chrome.runtime.sendMessage(data, null);
    chrome.storage.local.set({ 'current-room': newNo });
 }
