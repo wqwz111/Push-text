@@ -67,6 +67,14 @@
         top: 10px;
         right: 10px;
     }
+
+    .site-splash {
+      position: fixed;
+      top: 50%;
+      left: 25%;
+      width: 50%;
+      z-index: 1030;
+    }
     .card {
       margin-top: 60px;
       margin-bottom: 50px;
@@ -86,7 +94,7 @@
 </head>
 
 <body>
-  <div class="site-wrapper container">
+<div class="site-wrapper container" hidden>
     <div class="row align-items-center justify-content-md-center">
       <div class="col-lg-5">
         <div id="room-input" class="input-group">
@@ -116,6 +124,18 @@
       </div>
     </div>
   </div>
+
+<!-- Progress -->
+<div class="site-splash">
+  <h1 class="text-success">Initializing, Please wait..</h1>
+  <div class="w-100"></div>
+  <div class="progress-container">
+    <div class="progress">
+      <div class="progress-bar progress-bar-striped bg-success progress-bar-animated" role="progressbar"
+           aria-valuenow="10" aria-valuemin="0" aria-valuemax="10" style="width: 100%"></div>
+    </div>
+  </div>
+</div>
 
   <script src="lib/jquery.min.js"></script>
   <script src="lib/lazyload.js"></script>
