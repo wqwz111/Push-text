@@ -19,7 +19,7 @@ $(document).ready(function () {
    });
 
    $("#current-number").bind("DOMNodeInserted", function () {
-       if ($("#current-number").text() === "none") {
+       if ($("#current-number").text() === "None") {
          $("#leave-room").hide();
       } else {
          $("#leave-room").show();
@@ -57,7 +57,16 @@ function doAfterObtainConnection() {
 }
 
 function doAfterLostConnection() {
+    chrome.storage.local.get('current-room', function (item) {
+        var newNo = item['current-room'];
+        if (!newNo) {
+            $("#leave-room").hide();
+        } else {
+            $("#current-number").text(newNo);
+        }
+    });
     $('#connection-status').show();
+    $("#current-number").text('Waiting')
     $('#enter-room').prop('disabled', true);
     $('#tab-room').prop('disabled', true);
 }
@@ -74,7 +83,7 @@ function leaveRoom(roomNo) {
       directive: 'leave-room',
       roomNo: roomNo
    };
-   $("#current-number").text("none");
+    $("#current-number").text("None");
    chrome.runtime.sendMessage(data, null);
    chrome.storage.local.remove('current-room');
 }
