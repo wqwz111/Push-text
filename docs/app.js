@@ -60,7 +60,7 @@ $(document).ready(function () {
         if (e.keyCode === 13) {//13 is 'Enter'
             enterRoom();
         }
-    })
+    });
     $(window).on('beforeunload', function () {
         return "";
     });
