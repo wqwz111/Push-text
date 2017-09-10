@@ -5,6 +5,12 @@ $(document).ready(function () {
       setDataChangeListener();
       enterRoom();
    });
+    $(document).keydown(function (e) {
+        if (e.keyCode === 13) {//13 is 'Enter'
+            setDataChangeListener();
+            enterRoom();
+        }
+    })
 
    chrome.storage.local.get('current-room', function (item) {
       if (item['current-room'] && item['current-room'] !== "") {

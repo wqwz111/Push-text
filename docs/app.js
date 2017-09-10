@@ -41,6 +41,11 @@ $(document).ready(function () {
       enterRoom();
    });
 
+    $(document).keydown(function (e) {
+        if (e.keyCode === 13) {//13 is 'Enter'
+            enterRoom();
+        }
+    })
    $(window).on('beforeunload', function () {
       return "";
    });
