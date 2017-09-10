@@ -53,7 +53,7 @@ $(document).ready(function () {
 
    function enterRoom(shouldForceLoad) {
       var roomNo = $("#room-number").val();
-      if (typeof(shouldForceLoad) == 'undefined') {
+      if (typeof(shouldForceLoad) === 'undefined') {
          if (currentRoom === roomNo) {
             return;
          }
@@ -74,7 +74,7 @@ $(document).ready(function () {
    }
 
    function setDataChangeListener(roomNo, listener) {
-      if (roomNo !== null && typeof(listener) == 'function') {
+      if (roomNo !== null && typeof(listener) === 'function') {
          var ref = fireDatabase.ref('/rooms/' + roomNo + '/messages');
          ref.off('child_added', listener);
          ref.on('child_added', listener);

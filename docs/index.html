@@ -3,7 +3,7 @@
 
 <head>
   <title>Push Text</title>
-  <link href="lib/bootstrap.min.css" rel="stylesheet">
+  <link href="lib/css/bootstrap.min.css" rel="stylesheet">
   <style>
     html,
     body {
@@ -90,7 +90,7 @@
     <div class="row align-items-center justify-content-md-center">
       <div class="col-lg-5">
         <div id="room-input" class="input-group">
-          <input type="text" class="form-control input-lg" id="room-number" placeholder="Input room number">
+          <input class="form-control input-lg" id="room-number" placeholder="Input room number">
           <span class="input-group-btn">
             <button class="btn btn-primary btn-lg" id="go" type="button">Enter</button>
           </span>
@@ -109,7 +109,7 @@
       <div class="modal-content">
         <div class="modal-body">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <img src="close_64px.png">
+              <img src="lib/icons/close_64px.png">
             </button>
           <img id='modal-img' src="" />
         </div>
@@ -119,8 +119,8 @@
 
   <script src="lib/jquery.min.js"></script>
   <script src="lib/lazyload.js"></script>
-  <script src="lib/tether.min.js"></script>
-  <script src="lib/bootstrap.min.js"></script>
+  <script src="lib/js/popper.min.js"></script>
+  <script src="lib/js/bootstrap.min.js"></script>
   <script src="lib/firebase.js"></script>
   <script src="app.js"></script>
 </body>
