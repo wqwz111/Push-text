@@ -20,9 +20,11 @@ chrome.storage.local.set({'logged-in': false});
 firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
         // User is signed in.
-        console.log("logged in");
+        console.log("background logged in");
         chrome.storage.local.set({'logged-in': true});
         currentUser = user;
+
+        chrome.runtime.sendMessage({directive: 'logged-in'}, null);
     } else {
         // User is signed out.
         console.log("logged out, reconnect");

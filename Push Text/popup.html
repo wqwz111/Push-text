@@ -25,8 +25,13 @@
          display: inline-block;
       }
       #current-number {
-         color: #5bc0de;
          font-size: x-large;
+      }
+      .connected {
+         color: #007bff;
+      }
+      .disconnected {
+         color: #c9302c;
       }
       .title button {
          vertical-align: baseline;
@@ -69,7 +74,7 @@
       </button>
    </div>
    <div class="input-group">
-      <input type="text" class="form-control" id="room-number" placeholder="Input room number">
+      <input class="form-control" id="room-number" placeholder="Input room number">
       <span class="input-group-btn">
         <button class="btn btn-secondary btn-info" type="button" id="enter-room">
            <img src="lib/icons/ic_forward_white_24px.svg">

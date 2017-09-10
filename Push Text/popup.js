@@ -40,6 +40,16 @@ $(document).ready(function () {
            doAfterLostConnection()
        }
    });
+
+    chrome.runtime.onMessage.addListener(function (request) {
+        switch (request.directive) {
+            case 'logged-in': {
+                doAfterObtainConnection();
+                console.log('receive logged in');
+                break;
+            }
+        }
+    });
 });
 
 function doAfterObtainConnection() {
@@ -52,6 +62,8 @@ function doAfterObtainConnection() {
         }
     });
     $('#connection-status').hide();
+    $("#current-number").text('Ready');
+    $("#current-number").removeClass('disconnected').addClass('connected');
     $('#enter-room').prop('disabled', false);
     $('#tab-room').prop('disabled', false);
 }
@@ -66,7 +78,8 @@ function doAfterLostConnection() {
         }
     });
     $('#connection-status').show();
-    $("#current-number").text('Waiting')
+    $("#current-number").text('Waiting');
+    $("#current-number").addClass('disconnected').removeClass('connected');
     $('#enter-room').prop('disabled', true);
     $('#tab-room').prop('disabled', true);
 }
