@@ -38,6 +38,11 @@
       }
       button#connection-status {
          float: right;
+         margin-left: 5px;
+      }
+
+      button#user-manual {
+         float: right;
       }
       .input-group {
          clear: both;
@@ -66,15 +71,18 @@
 <body>
    <div class="title">
        <h5>Room: <span id="current-number"></span></h5>
-       <button type="button" class="btn btn-danger btn-sm" id="leave-room" hidden>
+      <button type="button" class="btn btn-danger btn-sm" id="leave-room">
          <img src="lib/icons/ic_clear_white_24px.svg">
       </button>
       <button type="button" class="btn btn-warning btn-sm" id="connection-status">
          <img src="lib/icons/ic_power_white_24px.svg">
       </button>
+      <button type="button" class="btn btn-info btn-sm" id="user-manual">
+         <img src="lib/icons/ic_help_outline_white_24px.svg">
+      </button>
    </div>
    <div class="input-group">
-      <input class="form-control" id="room-number" placeholder="Input room number">
+      <input class="form-control" id="room-number" placeholder="Input Room No.">
       <span class="input-group-btn">
         <button class="btn btn-secondary btn-info" type="button" id="enter-room">
            <img src="lib/icons/ic_forward_white_24px.svg">

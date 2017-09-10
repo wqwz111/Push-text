@@ -13,6 +13,10 @@ $(document).ready(function () {
       chrome.tabs.create({ url: 'app.html' });
    });
 
+    $("#user-manual").click(function () {
+        chrome.tabs.create({url: 'help.html'});
+    });
+
    $("#leave-room").click(function () {
       var roomNo = $("#current-number").text();
       leaveRoom(roomNo);
@@ -62,8 +66,9 @@ function doAfterObtainConnection() {
         }
     });
     $('#connection-status').hide();
-    $("#current-number").text('Ready');
-    $("#current-number").removeClass('disconnected').addClass('connected');
+    $('#current-number').text('Ready')
+        .removeClass('disconnected')
+        .addClass('connected');
     $('#enter-room').prop('disabled', false);
     $('#tab-room').prop('disabled', false);
 }
@@ -78,8 +83,9 @@ function doAfterLostConnection() {
         }
     });
     $('#connection-status').show();
-    $("#current-number").text('Waiting');
-    $("#current-number").addClass('disconnected').removeClass('connected');
+    $("#current-number").text('Waiting')
+        .addClass('disconnected')
+        .removeClass('connected');
     $('#enter-room').prop('disabled', true);
     $('#tab-room').prop('disabled', true);
 }
