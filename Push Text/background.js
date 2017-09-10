@@ -15,15 +15,18 @@ var onNewMessage = null;
 
 firebase.initializeApp(config);
 fireDatabase = firebase.database();
+chrome.storage.local.set({'logged-in': false});
 
 firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
         // User is signed in.
         console.log("logged in");
+        chrome.storage.local.set({'logged-in': true});
         currentUser = user;
     } else {
         // User is signed out.
         console.log("logged out, reconnect");
+        chrome.storage.local.set({'logged-in': false});
         firebase.auth().signInAnonymously();
     }
 });
@@ -177,6 +180,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
         case 'send-message': {
             var msg = buildMsg(currentUser.uid, request.content);
             sendMessageToRoom(currentRoom, msg);
+            break;
+        }
+        case 'force-connect': {
+            firebase.auth().signInAnonymously();
+            console.log('force connect');
             break;
         }
         case 'sign-in': {

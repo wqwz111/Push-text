@@ -1,5 +1,5 @@
 $(document).ready(function () {
-   signIn();
+   //signIn();
 
    $("#enter-room").click(function () {
       var newNo = $("#room-number").val();
@@ -26,15 +26,41 @@ $(document).ready(function () {
       }
    });
 
-   chrome.storage.local.get('current-room', function (item) {
-       var newNo = item['current-room'];
-       if (!newNo) {
-           $("#leave-room").hide();
+   $('#connection-status').click(function () {
+       var data = {
+           directive: 'force-connect'
+       };
+       chrome.runtime.sendMessage(data, null);
+   });
+
+   chrome.storage.local.get('logged-in', function(item) {
+       if (item['logged-in']) {
+           doAfterObtainConnection();
        } else {
-           $("#current-number").text(newNo);
-      }
+           doAfterLostConnection()
+       }
    });
 });
+
+function doAfterObtainConnection() {
+    chrome.storage.local.get('current-room', function (item) {
+        var newNo = item['current-room'];
+        if (!newNo) {
+            $("#leave-room").hide();
+        } else {
+            $("#current-number").text(newNo);
+        }
+    });
+    $('#connection-status').hide();
+    $('#enter-room').prop('disabled', false);
+    $('#tab-room').prop('disabled', false);
+}
+
+function doAfterLostConnection() {
+    $('#connection-status').show();
+    $('#enter-room').prop('disabled', true);
+    $('#tab-room').prop('disabled', true);
+}
 
 function signIn() {
    var data = {
