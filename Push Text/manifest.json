@@ -3,7 +3,7 @@
 
   "name": "Push Text",
   "description": "This extension push selected text to other devices",
-  "version": "1.0",
+  "version": "1.0.1",
   "content_security_policy": "script-src 'self' https://*.firebaseio.com; object-src 'self'",
 
   "icons": {
