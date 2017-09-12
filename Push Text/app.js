@@ -21,30 +21,6 @@ $(document).ready(function () {
       }
    });
 
-    // $(window).on('beforeunload', function () {
-    //    prepareToLeaveRoom();
-    //    return "";
-    // });
-    // $(window).on('unload', function () {
-    //    if (typeof(currentRoom) != 'undefined' || !currentRoom) {
-    //       leaveRoom(currentRoom);
-    //    }
-    // });
-
-    // function prepareToLeaveRoom() {
-    //    chrome.storage.local.get('current-room', function (item) {
-    //       if (item['current-room']) {
-    //          currentRoom = item['current-room'];
-    //       }
-    //    });
-    // }
-    //
-    // function leaveRoom(id) {
-    //    data = {roomNo: id};
-    //    console.log('leave room: ' + data.roomNo);
-    //    backgroundPage.leaveRoom(data);
-    // }
-
    function enterRoom(shouldForceLoad) {
       chrome.storage.local.get('current-room', function (item) {
          var roomNo = $("#room-number").val();
