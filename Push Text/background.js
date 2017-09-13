@@ -23,14 +23,6 @@ server.onLoginStatusChanged(function (user) {
     }
 });
 
-function addDataChangeListener(callback) {
-    server.onBroadcast(callback);
-}
-
-function removeDataChangeListener() {
-    server.onBroadcast(null)
-}
-
 function getQiniuUploadToken(callback, forceTo) {
     chrome.storage.local.get('upload-token', function (item) {
         var uploadToken = item['upload-token'];
@@ -151,17 +143,22 @@ function onDataChange(callback) {
 
 function enterRoom(request) {
     if (request.oldRoom) {
-        removeDataChangeListener();
+        server.offBroadcast(onNewMessage);
     }
-    server.enterRoom(request.newRoom, currentUser._id, null, function () {
+    server.enterRoom(request.newRoom, currentUser._id, null, function (req) {
         console.log('entered room: ' + request.newRoom);
-        addDataChangeListener(onNewMessage);
+        if (typeof onNewMessage === 'function') {
+            server.onBroadcast(onNewMessage);
+            req.forEach(function (item) {
+                onNewMessage(item);
+            });
+        }
     });
 }
 
 function leaveRoom() {
     server.leaveRoom(currentUser._id, function () {
-        removeDataChangeListener();
+        server.offBroadcast(onNewMessage);
         console.log('left room');
     });
 }
