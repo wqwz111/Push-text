@@ -207,7 +207,7 @@ var childAdd = function (snapshot) {
 };
 
 function capture(selText) {
-    chrome.tabs.captureVisibleTab(null, {format: 'jpeg', quality: 45},
+    chrome.tabs.captureVisibleTab(null, {format: 'jpeg', quality: 50},
         function (dataURI) {
             uploadFile(dataURI, currentRoom, function (downloadURL) {
                 var msg = buildMsg(currentUser.uid, selText, downloadURL);
