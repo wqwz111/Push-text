@@ -1,11 +1,7 @@
 $(document).ready(function () {
-    var config = {
-        apiKey: "AIzaSyDOZXLS_Gf5K343TuB1QTL-IwC27eNuv6U",
-        authDomain: "dream-c5c23.firebaseapp.com",
-        databaseURL: "https://dream-c5c23.firebaseio.com",
-        storageBucket: "dream-c5c23.appspot.com"
-    };
-    firebase.initializeApp(config);
+    var Room = new Room("http://");
+
+
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
             // User is signed in.
@@ -21,7 +17,6 @@ $(document).ready(function () {
         }
     });
 
-    var fireDatabase = firebase.database();
     var localStorage = window.localStorage;
 
     var onDataChanged = function (snap) {
@@ -88,16 +83,7 @@ $(document).ready(function () {
 
     function leaveRoom(roomNo) {
         if (roomNo !== null) {
-            var ref = fireDatabase.ref('/rooms/' + roomNo + '/messages');
-            ref.off('child_added', onDataChanged);
-        }
-    }
 
-    function setDataChangeListener(roomNo, listener) {
-        if (roomNo !== null && typeof(listener) === 'function') {
-            var ref = fireDatabase.ref('/rooms/' + roomNo + '/messages');
-            ref.off('child_added', listener);
-            ref.on('child_added', listener);
         }
     }
 });
