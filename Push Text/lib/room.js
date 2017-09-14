@@ -45,10 +45,8 @@ Room.prototype.onBroadcast = function (listener) {
     }
 };
 
-Room.prototype.offBroadcast = function (listener) {
-    if (typeof listener === 'function') {
-        this._socket.off('broadcast', listener);
-    }
+Room.prototype.offBroadcast = function () {
+    this._socket.off('broadcast');
 };
 
 Room.prototype.onConnect = function (listener) {
