@@ -1,23 +1,14 @@
-// Initialize Firebase
 var config = {
-    apiKey: "AIzaSyDOZXLS_Gf5K343TuB1QTL-IwC27eNuv6U",
-    authDomain: "dream-c5c23.firebaseapp.com",
-    databaseURL: "https://dream-c5c23.firebaseio.com",
-    projectId: "dream-c5c23",
-    //storageBucket: "dream-c5c23.appspot.com",
-    messagingSenderId: "273420774000"
+    socker_url: 'http://140.143.88.76:3000'
 };
-
+var server = new Room(config.socker_url);
+server.loginAnonymous();
 var currentUser;
-var fireDatabase;
-var currentRoom = null;
 var onNewMessage = null;
 
-firebase.initializeApp(config);
-fireDatabase = firebase.database();
 chrome.storage.local.set({'logged-in': false});
 
-firebase.auth().onAuthStateChanged(function (user) {
+server.onLoginStatusChanged(function (user) {
     if (user) {
         // User is signed in.
         console.log("background logged in");
@@ -29,20 +20,8 @@ firebase.auth().onAuthStateChanged(function (user) {
         // User is signed out.
         console.log("logged out, reconnect");
         chrome.storage.local.set({'logged-in': false});
-        firebase.auth().signInAnonymously();
     }
 });
-
-function addDataChangeListener(roomNo, callback) {
-    var ref = fireDatabase.ref('/rooms/' + roomNo + '/messages');
-    ref.off('child_added', callback);
-    ref.on('child_added', callback);
-}
-
-function removeDataChangeListener(roomNo, callback) {
-    var ref = fireDatabase.ref('/rooms/' + roomNo + '/messages');
-    ref.off('child_added', callback);
-}
 
 function getQiniuUploadToken(callback, forceTo) {
     chrome.storage.local.get('upload-token', function (item) {
@@ -105,60 +84,8 @@ function buildMsg(uid, content, fileUrl) {
     };
 }
 
-function sendMessageToRoom(roomNo, msg) {
-    var refPath = 'rooms/' + roomNo + '/messages';
-    var ref = fireDatabase.ref(refPath);
-    var newMsgKey = ref.push().key;
-    var newData = {};
-    newData[newMsgKey] = msg;
-    ref.update(newData);
-}
-
-function addUserToRoom(roomNo, uid) {
-    var ref = fireDatabase.ref('rooms/' + roomNo + '/users');
-    var newData = {};
-    newData[uid] = 1;
-    ref.update(newData);
-}
-
-function removeUserFromRoom(roomNo, uid, callback) {
-    fireDatabase.ref('rooms')
-        .once('value', function (snapshot) {
-            var roomNoStr = roomNo.toString();
-            var uidStr = uid.toString();
-            if (snapshot.hasChild(roomNoStr)
-                && snapshot.child(roomNoStr).child('users')
-                    .hasChild(uidStr)) {
-                var ref = fireDatabase.ref('rooms/' + roomNo + '/users');
-                ref.child(uidStr).remove();
-                if (typeof callback === 'function') {
-                    callback(roomNo);
-                }
-            }
-        });
-}
-
-function createOrEnterRoom(roomNo, uid, callback) {
-    fireDatabase.ref('rooms')
-        .once('value', function (snapshot) {
-            var roomNoStr = roomNo.toString();
-            if (!snapshot.hasChild(roomNoStr)) {
-                fireDatabase.ref('rooms/' + roomNo).set({
-                    ownerId: uid,
-                    createdTime: firebase.database.ServerValue.TIMESTAMP
-                });
-                addUserToRoom(roomNo, uid);
-                if (typeof callback === 'function') {
-                    callback(roomNo);
-                }
-            } else if (!snapshot.child(roomNoStr)
-                    .hasChild(uid.toString())) {
-                addUserToRoom(roomNo, uid);
-                if (typeof callback === 'function') {
-                    callback(roomNo);
-                }
-            }
-        });
+function sendMessageToRoom(msg) {
+    server.sendMessage(currentUser._id, msg);
 }
 
 chrome.runtime.onMessage.addListener(function (request, sender, callback) {
@@ -180,12 +107,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
             break;
         }
         case 'send-message': {
-            var msg = buildMsg(currentUser.uid, request.content);
-            sendMessageToRoom(currentRoom, msg);
+            var msg = buildMsg(currentUser._id, request.content);
+            sendMessageToRoom(msg);
             break;
         }
         case 'force-connect': {
-            firebase.auth().signInAnonymously();
             console.log('force connect');
             break;
         }
@@ -193,25 +119,18 @@ chrome.runtime.onMessage.addListener(function (request, sender, callback) {
             if (currentUser) {
                 return;
             }
-            firebase.auth().signInAnonymously();
             console.log('signed in');
             break;
         }
     }
 });
 
-var childAdd = function (snapshot) {
-    if (onNewMessage) {
-        onNewMessage(snapshot.val());
-    }
-};
-
 function capture(selText) {
     chrome.tabs.captureVisibleTab(null, {format: 'jpeg', quality: 50},
         function (dataURI) {
-            uploadFile(dataURI, currentRoom, function (downloadURL) {
-                var msg = buildMsg(currentUser.uid, selText, downloadURL);
-                sendMessageToRoom(currentRoom, msg);
+            uploadFile(dataURI, server.currentRoom(), function (downloadURL) {
+                var msg = buildMsg(currentUser._id, selText, downloadURL);
+                sendMessageToRoom(msg);
             });
         });
 }
@@ -223,27 +142,26 @@ function onDataChange(callback) {
 }
 
 function enterRoom(request) {
-    var uid = currentUser.uid;
     if (request.oldRoom) {
-        removeUserFromRoom(request.oldRoom, uid);
-        console.log('left room: ' + request.oldRoom);
+        server.offBroadcast(onNewMessage);
     }
-    console.log('entered room: ' + request.newRoom);
-    createOrEnterRoom(request.newRoom, uid, function (roomNo) {
-        addDataChangeListener(roomNo, childAdd);
-        currentRoom = roomNo;
+    server.enterRoom(request.newRoom, currentUser._id, null, function (req) {
+        console.log('entered room: ' + request.newRoom);
+        if (typeof onNewMessage === 'function') {
+            server.onBroadcast(onNewMessage);
+            req.forEach(function (item) {
+                onNewMessage(item);
+            });
+        }
     });
 }
 
-function leaveRoom(request) {
-    var uid = currentUser.uid;
-    removeUserFromRoom(request.roomNo, uid, function (roomNo) {
-        removeDataChangeListener(roomNo, childAdd);
-        currentRoom = null;
+function leaveRoom() {
+    server.leaveRoom(currentUser._id, function () {
+        server.offBroadcast(onNewMessage);
+        console.log('left room');
     });
-    console.log('left room: ' + request.roomNo);
 }
-
 
 function urlSafeBase64(str) {
     return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
