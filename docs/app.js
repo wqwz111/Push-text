@@ -1,26 +1,30 @@
 $(document).ready(function () {
-    var Room = new Room("http://");
+    var server = new Room("http://140.143.88.76:3000");
+    server.loginAnonymous();
+    var localStorage = window.localStorage;
+    var currentRoom = localStorage.getItem('current-room');
+    var currentUser = null;
 
-
-    firebase.auth().onAuthStateChanged(function (user) {
+    server.onLoginStatusChanged(function (user) {
         if (user) {
             // User is signed in.
             console.log("logged in");
             $('.site-splash').attr('hidden', 'hidden');
             $('.site-wrapper').attr('hidden', null);
+            currentUser = user;
+            if (currentRoom) {
+                $("#room-number").val(currentRoom);
+                enterRoom(true);
+            }
         } else {
             // User is signed out.
             console.log("logged out, reconnect");
             $('.site-splash').attr('hidden', null);
             $('.site-wrapper').attr('hidden', 'hidden');
-            firebase.auth().signInAnonymously();
         }
     });
 
-    var localStorage = window.localStorage;
-
-    var onDataChanged = function (snap) {
-        var data = snap.val();
+    var onDataChanged = function (data) {
         if (data.fileUrl) {
             $("#msg-list").prepend("<div class='card'>" +
                 "<img class='card-img card-img-top lazyload'" +
@@ -41,18 +45,14 @@ $(document).ready(function () {
         }
     };
 
-    var currentRoom = localStorage.getItem('current-room');
-    if (currentRoom) {
-        $("#room-number").val(currentRoom);
-        enterRoom(true);
-    }
-
     $("#go").click(function () {
-        enterRoom();
+        if ($('#room-number').val().trim() !== "") {
+            enterRoom();
+        }
     });
 
     $(document).keydown(function (e) {
-        if (e.keyCode === 13) {//13 is 'Enter'
+        if (e.keyCode === 13 && $('#room-number').val().trim() !== "") {//13 is 'Enter'
             enterRoom();
         }
     });
@@ -62,28 +62,31 @@ $(document).ready(function () {
     $(window).on('unload', function () {
         if (currentRoom) {
             console.log('leave room: ' + currentRoom);
-            leaveRoom(currentRoom);
+            server.offBroadcast();
         }
     });
 
     function enterRoom(shouldForceLoad) {
+        if (!currentUser) {
+            return;
+        }
         var roomNo = $("#room-number").val();
         if (typeof(shouldForceLoad) === 'undefined') {
             if (currentRoom === roomNo) {
                 return;
             }
-            leaveRoom(currentRoom);
+            server.offBroadcast();
         }
-        setDataChangeListener(roomNo, onDataChanged);
+        server.onBroadcast(onDataChanged)
         localStorage.setItem('current-room', roomNo);
         currentRoom = roomNo;
         $("#msg-list").children().remove();
-        console.log('enter room: ' + roomNo);
-    }
 
-    function leaveRoom(roomNo) {
-        if (roomNo !== null) {
-
-        }
+        server.enterRoom(roomNo, currentUser._id, null, function (req) {
+            console.log('entered room: ' + roomNo);
+            req.forEach(function (item) {
+                onDataChanged(item);
+            });
+        });
     }
 });

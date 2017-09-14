@@ -12,6 +12,10 @@ Room.prototype.loginAnonymous = function () {
     this._socket.emit('login');
 };
 
+Room.prototype.logout = function (userId) {
+    this._socket.emit('logout', {user_id: userId});
+};
+
 Room.prototype.enterRoom = function (newRoom, uid, passwd, callback) {
     var data = {
         new_room: newRoom,
@@ -45,10 +49,8 @@ Room.prototype.onBroadcast = function (listener) {
     }
 };
 
-Room.prototype.offBroadcast = function (listener) {
-    if (typeof listener === 'function') {
-        this._socket.off('broadcast', listener);
-    }
+Room.prototype.offBroadcast = function () {
+    this._socket.off('broadcast');
 };
 
 Room.prototype.onConnect = function (listener) {

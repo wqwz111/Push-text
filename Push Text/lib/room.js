@@ -12,6 +12,10 @@ Room.prototype.loginAnonymous = function () {
     this._socket.emit('login');
 };
 
+Room.prototype.logout = function (userId) {
+    this._socket.emit('logout', {user_id: userId});
+};
+
 Room.prototype.enterRoom = function (newRoom, uid, passwd, callback) {
     var data = {
         new_room: newRoom,
