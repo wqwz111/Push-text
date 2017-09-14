@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    var server = new Room("http://140.143.88.76:3000");
+    var server = new Room("ws://140.143.88.76:3000");
     server.loginAnonymous();
     var localStorage = window.localStorage;
     var currentRoom = localStorage.getItem('current-room');
