@@ -1,5 +1,5 @@
 var config = {
-    socker_url: 'http://localhost:3000'
+    socker_url: 'http://140.143.88.76:3000'
 };
 var server = new Room(config.socker_url);
 server.loginAnonymous();
