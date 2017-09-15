@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    var server = new Room("ws://140.143.88.76:3000");
+    var server = new Room("https://push8.club");
     server.loginAnonymous();
     var localStorage = window.localStorage;
     var currentRoom = localStorage.getItem('current-room');
