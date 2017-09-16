@@ -27,7 +27,8 @@ function getQiniuUploadToken(callback, forceTo) {
     chrome.storage.local.get('upload-token', function (item) {
         var uploadToken = item['upload-token'];
         if (!uploadToken || forceTo) {
-            var url = "https://us-central1-dream-c5c23.cloudfunctions.net/qiniuUpToken";
+            // var url = "https://us-central1-dream-c5c23.cloudfunctions.net/qiniuUpToken";
+            var url = "https://push8.club/api/qiniuUpToken";
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4 && xhr.status === 200) {
