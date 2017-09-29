@@ -142,16 +142,16 @@ function onDataChange(callback) {
     }
 }
 
-function enterRoom(request) {
+function enterRoom(request, onNewMessageListener) {
     if (request.oldRoom) {
-        server.offBroadcast(onNewMessage);
+        server.offBroadcast();
     }
     server.enterRoom(request.newRoom, currentUser._id, null, function (req) {
         console.log('entered room: ' + request.newRoom);
-        if (typeof onNewMessage === 'function') {
-            server.onBroadcast(onNewMessage);
+        if (typeof onNewMessageListener === 'function') {
+            server.onBroadcast(onNewMessageListener);
             req.forEach(function (item) {
-                onNewMessage(item);
+                onNewMessageListener(item);
             });
         }
     });
@@ -159,7 +159,7 @@ function enterRoom(request) {
 
 function leaveRoom() {
     server.leaveRoom(currentUser._id, function () {
-        server.offBroadcast(onNewMessage);
+        server.offBroadcast();
         console.log('left room');
     });
 }
