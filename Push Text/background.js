@@ -1,5 +1,5 @@
 var config = {
-    socker_url: 'http://140.143.88.76:3000'
+    socker_url: 'https://push8.club'
 };
 var server = new Room(config.socker_url);
 server.loginAnonymous();
@@ -27,7 +27,8 @@ function getQiniuUploadToken(callback, forceTo) {
     chrome.storage.local.get('upload-token', function (item) {
         var uploadToken = item['upload-token'];
         if (!uploadToken || forceTo) {
-            var url = "https://us-central1-dream-c5c23.cloudfunctions.net/qiniuUpToken";
+            // var url = "https://us-central1-dream-c5c23.cloudfunctions.net/qiniuUpToken";
+            var url = "https://push8.club/api/qiniuUpToken";
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4 && xhr.status === 200) {
@@ -141,16 +142,16 @@ function onDataChange(callback) {
     }
 }
 
-function enterRoom(request) {
+function enterRoom(request, onNewMessageListener) {
     if (request.oldRoom) {
-        server.offBroadcast(onNewMessage);
+        server.offBroadcast();
     }
     server.enterRoom(request.newRoom, currentUser._id, null, function (req) {
         console.log('entered room: ' + request.newRoom);
-        if (typeof onNewMessage === 'function') {
-            server.onBroadcast(onNewMessage);
+        if (typeof onNewMessageListener === 'function') {
+            server.onBroadcast(onNewMessageListener);
             req.forEach(function (item) {
-                onNewMessage(item);
+                onNewMessageListener(item);
             });
         }
     });
@@ -158,7 +159,7 @@ function enterRoom(request) {
 
 function leaveRoom() {
     server.leaveRoom(currentUser._id, function () {
-        server.offBroadcast(onNewMessage);
+        server.offBroadcast();
         console.log('left room');
     });
 }
