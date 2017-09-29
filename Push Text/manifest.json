@@ -4,7 +4,7 @@
   "name": "Push Text",
   "description": "This extension push selected text to other devices",
   "version": "1.1",
-  "content_security_policy": "script-src 'self' object-src 'self'",
+  "content_security_policy": "script-src 'self'; object-src 'self'",
 
   "icons": {
     "128": "icon.png"
